@@ -1,5 +1,6 @@
 import argparse
 import matplotlib.pyplot as plt
+import matplotlib.colors as color
 import numpy as np
 from scipy import constants
 
@@ -12,7 +13,7 @@ x = np.arange(-0.5, 0.5, args.spacing)
 y = np.arange(-0.5, 0.5, args.spacing)
 X, Y = np.meshgrid(x, y)
 
-k = 1 / (4 * np.pi * constants.epsilon_0)
+k = constants.elementary_charge / (4 * np.pi * constants.epsilon_0)
 
 q1 = 1.0
 q2 = -1.0
@@ -53,8 +54,11 @@ h = args.step
 dfdx = (potential(X + h/2, Y) - potential(X - h/2, Y)) / h
 dfdy = (potential(X, Y + h/2) - potential(X, Y - h/2)) / h
 
+dfdxnorm = dfdx/np.sqrt(dfdx**2 + dfdy**2)
+dfdynorm = dfdy/np.sqrt(dfdx**2 + dfdy**2)
+
 plt.figure()
-plt.quiver(X, Y, -dfdx, -dfdy)
+plt.quiver(X, Y, -dfdxnorm, -dfdynorm, np.sqrt(dfdx**2 + dfdy**2))
 plt.xlabel("x (m)")
 plt.ylabel("y (m)")
 plt.title("Electric Field of Two Charges")
